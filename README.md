@@ -32,6 +32,18 @@ To install modules required after installing Python3, run in Command Promp/Power
 9. Added keyboard keybinds
 10. Symbol buttons now replaces the original instead of adding more...
 
+# Keybinds
+1. All Numbers: NUMPAD or NUMKEYS
+2. Addition: +
+3. Subtraction: -
+4. Multiplication: *
+5. Division: /
+6. Square Root: Shift + @
+7. Change Theme: T
+8. Plus-Minus: P
+9. Undo: Backspace
+10. Cancel: Esc
+
 # Side Note
 Still bad coding practices. Use a better way to code this...  
 I made this only because I was bored and got nothing better to do...  
