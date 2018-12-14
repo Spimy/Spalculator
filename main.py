@@ -26,7 +26,7 @@ class App(Tk):
         x_coord = (self.winfo_screenwidth() // 2) - (WINDOW_WIDTH // 2)
         y_coord = (self.winfo_screenheight() // 2) - (WINDOW_HEIGHT // 2)
 
-        self.title('Spalculator v1.0 - by Spimy')
+        self.title('Spalculator v2.0 - by Spimy')
         self.iconbitmap('icon.ico')
         self.geometry('{0}x{1}+{2}+{3}'.format(WINDOW_WIDTH, WINDOW_HEIGHT, x_coord, y_coord))
         self.configure(cursor='@anime.ani')
@@ -58,10 +58,17 @@ class Main(Frame):
 
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
+        self.checker = ''
+
 
         self.result = Label(self, anchor='se', bg='#010101', fg='#f1f1f1', relief=FLAT, height=3, 
-                       font=('Consolas', 20), justify='right')
+                            font=('Consolas', 20), justify='right')
         self.result['text'] = ''.join(RESULT_TEXT)
+
+        self.theme = Button(self, text='Dark', font=('Consolas', 8), relief=FLAT, bg='#0a0a0a', fg='#f1f1f1',
+                            command=self.theme_changer)
+        self.theme.grid(row=0, column=0, sticky='nw', padx=5, pady=5)
+
         self.btns = Frame(self)
         # self.btns.grid_rowconfigure(0, weight=1)
         # self.btns.grid_rowconfigure(1, weight=1)
@@ -77,28 +84,102 @@ class Main(Frame):
 
         self.create_buttons()
 
+        controller.bind('<Return>', self.equate)
+        controller.bind('<BackSpace>', self.undof)
+        controller.bind('1', self.onef)
+        controller.bind('2', self.twof)
+        controller.bind('3', self.threef)
+        controller.bind('4', self.fourf)
+        controller.bind('5', self.fivef)
+        controller.bind('6', self.sixf)
+        controller.bind('7', self.sevenf)
+        controller.bind('8', self.eightf)
+        controller.bind('9', self.ninef)
+        controller.bind('0', self.zerof)
+        controller.bind('+', self.addf)
+        controller.bind('-', self.subf)
+        controller.bind('*', self.multif)
+        controller.bind('/', self.divf)
+        controller.bind('t', self.theme_changer)
+        controller.bind('p', self.plusminusf)
+        controller.bind('.', self.decif)
+        controller.bind('<Shift-@>', self.rootf)
+        controller.bind('<Escape>', self.cancelf)
+
+    def theme_changer(self, smth=None):
+        if self.theme['text'] == 'Dark':
+            self.theme.configure(bg='#c9c9c9', fg='#000000', text='Light')
+            self.one.configure(bg='#999999', fg='#000000')
+            self.two.configure(bg='#999999', fg='#000000')
+            self.three.configure(bg='#999999', fg='#000000')
+            self.four.configure(bg='#999999', fg='#000000')
+            self.five.configure(bg='#999999', fg='#000000')
+            self.six.configure(bg='#999999', fg='#000000')
+            self.seven.configure(bg='#999999', fg='#000000')
+            self.eight.configure(bg='#999999', fg='#000000')
+            self.nine.configure(bg='#999999', fg='#000000')
+            self.zero.configure(bg='#999999', fg='#000000')
+            self.add.configure(bg='#999999', fg='#000000')
+            self.sub.configure(bg='#999999', fg='#000000')
+            self.plusminus.configure(bg='#999999', fg='#000000')
+            self.equal.configure(bg='#999999', fg='#000000')
+            self.root.configure(bg='#999999', fg='#000000')
+            self.cancel.configure(bg='#999999', fg='#000000')
+            self.undo.configure(bg='#999999', fg='#000000')
+            self.deci.configure(bg='#999999', fg='#000000')
+            self.multi.configure(bg='#999999', fg='#000000')
+            self.div.configure(bg='#999999', fg='#000000')
+            self.result.configure(bg='#999999', fg='#000000')
+            self.btns.configure(background='#e2e2e2')
+            self.configure(background='#e2e2e2')
+        else:
+            self.theme.configure(bg='#0a0a0a', fg='#f1f1f1', text='Dark')
+            self.one.configure(bg='#030303', fg='#f1f1f1')
+            self.two.configure(bg='#030303', fg='#f1f1f1')
+            self.three.configure(bg='#030303', fg='#f1f1f1')
+            self.four.configure(bg='#030303', fg='#f1f1f1')
+            self.five.configure(bg='#030303', fg='#f1f1f1')
+            self.six.configure(bg='#030303', fg='#f1f1f1')
+            self.seven.configure(bg='#030303', fg='#f1f1f1')
+            self.eight.configure(bg='#030303', fg='#f1f1f1')
+            self.nine.configure(bg='#030303', fg='#f1f1f1')
+            self.zero.configure(bg='#030303', fg='#f1f1f1')
+            self.add.configure(bg='#030303', fg='#f1f1f1')
+            self.sub.configure(bg='#030303', fg='#f1f1f1')
+            self.plusminus.configure(bg='#030303', fg='#f1f1f1')
+            self.equal.configure(bg='#030303', fg='#f1f1f1')
+            self.root.configure(bg='#030303', fg='#f1f1f1')
+            self.cancel.configure(bg='#030303', fg='#f1f1f1')
+            self.undo.configure(bg='#030303', fg='#f1f1f1')
+            self.deci.configure(bg='#030303', fg='#f1f1f1')
+            self.div.configure(bg='#030303', fg='#f1f1f1')
+            self.multi.configure(bg='#030303', fg='#f1f1f1')
+            self.result.configure(bg='#030303', fg='#f1f1f1')
+            self.btns.configure(background='#0f0f0f')
+            self.configure(background='#0f0f0f')
+
     def create_buttons(self):
 
-        self.one = Button(self.btns, text='1', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.one)
-        self.two = Button(self.btns, text='2', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.two)
-        self.three = Button(self.btns, text='3', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.three)
-        self.four = Button(self.btns, text='4', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.four)
-        self.five = Button(self.btns, text='5', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.five)
-        self.six = Button(self.btns, text='6', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.six)
-        self.seven = Button(self.btns, text='7', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.seven)
-        self.eight = Button(self.btns, text='8', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.eight)
-        self.nine = Button(self.btns, text='9', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.nine)
-        self.multi = Button(self.btns, text='×', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.multi)
-        self.sub = Button(self.btns, text='-', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.sub)
-        self.add = Button(self.btns, text='+', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.add)
-        self.zero = Button(self.btns, text='0', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.zero)
-        self.plusminus = Button(self.btns, text='±', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.plusminus)
-        self.deci = Button(self.btns, text=',', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.deci)
+        self.one = Button(self.btns, text='1', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.onef)
+        self.two = Button(self.btns, text='2', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.twof)
+        self.three = Button(self.btns, text='3', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.threef)
+        self.four = Button(self.btns, text='4', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.fourf)
+        self.five = Button(self.btns, text='5', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.fivef)
+        self.six = Button(self.btns, text='6', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.sixf)
+        self.seven = Button(self.btns, text='7', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.sevenf)
+        self.eight = Button(self.btns, text='8', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.eightf)
+        self.nine = Button(self.btns, text='9', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.ninef)
+        self.multi = Button(self.btns, text='×', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.multif)
+        self.sub = Button(self.btns, text='-', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.subf)
+        self.add = Button(self.btns, text='+', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.addf)
+        self.zero = Button(self.btns, text='0', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.zerof)
+        self.plusminus = Button(self.btns, text='±', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.plusminusf)
+        self.deci = Button(self.btns, text=',', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.decif)
         self.equal = Button(self.btns, text='=', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.equate)
-        self.cancel = Button(self.btns, text='CE', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.cancel)
-        self.root = Button(self.btns, text='√', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.root)
-        self.undo = Button(self.btns, text='⌫', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.undo)
-        self.div = Button(self.btns, text='÷', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.div)
+        self.cancel = Button(self.btns, text='C', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.cancelf)
+        self.root = Button(self.btns, text='√', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.rootf)
+        self.undo = Button(self.btns, text='⌫', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.undof)
+        self.div = Button(self.btns, text='÷', relief=FLAT, font=('Consolas', 15), width=2, height=2, bg='#030303', fg='#f1f1f1', command=self.divf)
 
         self.div.grid(row=1, column=3, sticky='nsew', padx=10, pady=10)
         self.undo.grid(row=1, column=2, sticky='nsew', padx=10, pady=10)
@@ -121,10 +202,15 @@ class Main(Frame):
         self.deci.grid(row=5, column=2, sticky='nsew', padx=10, pady=10)
         self.equal.grid(row=5, column=3, sticky='nsew', padx=10, pady=10)
 
-    def div(self):
+    def divf(self, smth=None):
         global RESULT_TEXT
 
         if ''.join(RESULT_TEXT) == '':
+            return
+
+        if len(RESULT_TEXT) == 2:
+            RESULT_TEXT[1] = '÷'
+            self.result['text'] = ''.join(RESULT_TEXT)
             return
 
         if len(RESULT_TEXT) == 3: 
@@ -133,8 +219,13 @@ class Main(Frame):
         RESULT_TEXT.append('÷')
         self.result['text'] = ''.join(RESULT_TEXT)
 
-    def undo(self):
+    def undof(self, smth=None):
         global RESULT_TEXT
+
+        if len(RESULT_TEXT[0]) == 2 and RESULT_TEXT[0][0] == '-':
+            RESULT_TEXT[0] = '0'
+            self.result['text'] = ''.join(RESULT_TEXT)
+            return
 
         if len(RESULT_TEXT[0]) == 1:
             RESULT_TEXT[0] = '0'
@@ -148,22 +239,45 @@ class Main(Frame):
         RESULT_TEXT[-1] = minus
         self.result['text'] = ''.join(RESULT_TEXT)
 
-    def root(self):
+    def rootf(self, smth=None):
         global RESULT_TEXT, ANS
 
         if len(RESULT_TEXT) < 1: return
+        if len(RESULT_TEXT) == 2: 
+            
+            if RESULT_TEXT[0][0] == '-':
+                RESULT_TEXT.append(RESULT_TEXT[0][1::])
+            else:
+                RESULT_TEXT.append(RESULT_TEXT[0])
 
-        ANS = math.floor(math.sqrt(float(RESULT_TEXT[0]))) if math.sqrt(float(RESULT_TEXT[0])).is_integer() else math.sqrt(float(RESULT_TEXT[0]))
-        RESULT_TEXT = [str(ANS)]
-        self.result['text'] = ''.join(RESULT_TEXT)
+            ANS = math.floor(math.sqrt(float(RESULT_TEXT[-1]))) if math.sqrt(float(RESULT_TEXT[-1])).is_integer() else math.sqrt(float(RESULT_TEXT[-1]))
+            final_ans = float(RESULT_TEXT[0]) + ANS
+            final_ans = math.floor(final_ans) if final_ans.is_integer() else final_ans
+            RESULT_TEXT = [str(final_ans)]
+            self.checker = 'Ok!'
+            self.result['text'] = ''.join(RESULT_TEXT)
+            
+            return
 
-    def cancel(self):
+        try:
+            ANS = math.floor(math.sqrt(float(RESULT_TEXT[-1]))) if math.sqrt(float(RESULT_TEXT[-1])).is_integer() else math.sqrt(float(RESULT_TEXT[-1]))
+            RESULT_TEXT = [str(ANS)]
+            self.checker = 'Ok!'
+            self.result['text'] = ''.join(RESULT_TEXT)
+        except ValueError:
+            self.disablebtns()
+            ANS = 'Maths Error'
+            RESULT_TEXT = [str(ANS)]
+            self.result['text'] = ANS
+            return
+
+    def cancelf(self, smth=None):
         global RESULT_TEXT
 
         RESULT_TEXT = ['0']
         self.result['text'] = ''.join(RESULT_TEXT)
 
-    def one(self):
+    def onef(self, smth=None):
         global RESULT_TEXT, ANS
 
         self.enablebtns()
@@ -171,7 +285,18 @@ class Main(Frame):
         if RESULT_TEXT[-1] == '0':
             RESULT_TEXT[-1] = ''
 
-        if ANS != '' and RESULT_TEXT[-1] not in [i for i in ('+', '-', '÷', '×')]:
+        if self.checker != '':
+            if len(RESULT_TEXT) == 2:
+                if RESULT_TEXT[1] in [i for i in ('+', '-', '÷', '×')]:
+                    self.checker = ''
+                    RESULT_TEXT.append('1')
+                    self.result['text'] = ''.join(RESULT_TEXT)
+                    return
+
+            RESULT_TEXT = ['']
+            self.checker = ''
+
+        if ANS == 'Maths Error':
             ANS = ''
             RESULT_TEXT = ['']
 
@@ -183,7 +308,7 @@ class Main(Frame):
         RESULT_TEXT[-1] += '1'
         self.result['text'] = ''.join(RESULT_TEXT)
 
-    def two(self):
+    def twof(self, smth=None):
         global RESULT_TEXT, ANS
 
         self.enablebtns()
@@ -191,7 +316,15 @@ class Main(Frame):
         if RESULT_TEXT[-1] == '0':
             RESULT_TEXT[-1] = ''
 
-        if ANS != '' and RESULT_TEXT[-1] not in [i for i in ('+', '-', '÷', '×')]:
+        if self.checker != '':
+            if len(RESULT_TEXT) == 2:
+                if RESULT_TEXT[1] in [i for i in ('+', '-', '÷', '×')]:
+                    self.checker = ''
+                    RESULT_TEXT.append('2')
+                    self.result['text'] = ''.join(RESULT_TEXT)
+                    return
+
+        if ANS == 'Maths Error':
             ANS = ''
             RESULT_TEXT = ['']
 
@@ -203,7 +336,7 @@ class Main(Frame):
         RESULT_TEXT[-1] += '2'
         self.result['text'] = ''.join(RESULT_TEXT)
 
-    def three(self):
+    def threef(self, smth=None):
         global RESULT_TEXT, ANS
 
         self.enablebtns()
@@ -211,7 +344,15 @@ class Main(Frame):
         if RESULT_TEXT[-1] == '0':
             RESULT_TEXT[-1] = ''
 
-        if ANS != '' and RESULT_TEXT[-1] not in [i for i in ('+', '-', '÷', '×')]:
+        if self.checker != '':
+            if len(RESULT_TEXT) == 2:
+                if RESULT_TEXT[1] in [i for i in ('+', '-', '÷', '×')]:
+                    self.checker = ''
+                    RESULT_TEXT.append('3')
+                    self.result['text'] = ''.join(RESULT_TEXT)
+                    return
+
+        if ANS == 'Maths Error':
             ANS = ''
             RESULT_TEXT = ['']
 
@@ -223,7 +364,7 @@ class Main(Frame):
         RESULT_TEXT[-1] += '3'
         self.result['text'] = ''.join(RESULT_TEXT)
 
-    def four(self):
+    def fourf(self, smth=None):
         global RESULT_TEXT, ANS
         
         self.enablebtns()
@@ -231,7 +372,15 @@ class Main(Frame):
         if RESULT_TEXT[-1] == '0':
             RESULT_TEXT[-1] = ''
 
-        if ANS != '' and RESULT_TEXT[-1] not in [i for i in ('+', '-', '÷', '×')]:
+        if self.checker != '':
+            if len(RESULT_TEXT) == 2:
+                if RESULT_TEXT[1] in [i for i in ('+', '-', '÷', '×')]:
+                    self.checker = ''
+                    RESULT_TEXT.append('4')
+                    self.result['text'] = ''.join(RESULT_TEXT)
+                    return
+
+        if ANS == 'Maths Error':
             ANS = ''
             RESULT_TEXT = ['']
 
@@ -242,7 +391,7 @@ class Main(Frame):
         RESULT_TEXT[-1] += '4'
         self.result['text'] = ''.join(RESULT_TEXT)
 
-    def five(self):
+    def fivef(self, smth=None):
         global RESULT_TEXT, ANS
 
         self.enablebtns()
@@ -250,7 +399,15 @@ class Main(Frame):
         if RESULT_TEXT[-1] == '0':
             RESULT_TEXT[-1] = ''
 
-        if ANS != '' and RESULT_TEXT[-1] not in [i for i in ('+', '-', '÷', '×')]:
+        if self.checker != '':
+            if len(RESULT_TEXT) == 2:
+                if RESULT_TEXT[1] in [i for i in ('+', '-', '÷', '×')]:
+                    self.checker = ''
+                    RESULT_TEXT.append('5')
+                    self.result['text'] = ''.join(RESULT_TEXT)
+                    return
+
+        if ANS == 'Maths Error':
             ANS = ''
             RESULT_TEXT = ['']
 
@@ -261,7 +418,7 @@ class Main(Frame):
         RESULT_TEXT[-1] += '5'
         self.result['text'] = ''.join(RESULT_TEXT)
 
-    def six(self):
+    def sixf(self, smth=None):
         global RESULT_TEXT, ANS
 
         self.enablebtns()
@@ -269,7 +426,15 @@ class Main(Frame):
         if RESULT_TEXT[-1] == '0':
             RESULT_TEXT[-1] = ''
 
-        if ANS != '' and RESULT_TEXT[-1] not in [i for i in ('+', '-', '÷', '×')]:
+        if self.checker != '':
+            if len(RESULT_TEXT) == 2:
+                if RESULT_TEXT[1] in [i for i in ('+', '-', '÷', '×')]:
+                    self.checker = ''
+                    RESULT_TEXT.append('6')
+                    self.result['text'] = ''.join(RESULT_TEXT)
+                    return
+
+        if ANS == 'Maths Error':
             ANS = ''
             RESULT_TEXT = ['']
 
@@ -281,7 +446,7 @@ class Main(Frame):
         RESULT_TEXT[-1] += '6'
         self.result['text'] = ''.join(RESULT_TEXT)
 
-    def seven(self):
+    def sevenf(self, smth=None):
         global RESULT_TEXT, ANS
 
         self.enablebtns()
@@ -289,7 +454,15 @@ class Main(Frame):
         if RESULT_TEXT[-1] == '0':
             RESULT_TEXT[-1] = ''
 
-        if ANS != '' and RESULT_TEXT[-1] not in [i for i in ('+', '-', '÷', '×')]:
+        if self.checker != '':
+            if len(RESULT_TEXT) == 2:
+                if RESULT_TEXT[1] in [i for i in ('+', '-', '÷', '×')]:
+                    self.checker = ''
+                    RESULT_TEXT.append('7')
+                    self.result['text'] = ''.join(RESULT_TEXT)
+                    return
+
+        if ANS == 'Maths Error':
             ANS = ''
             RESULT_TEXT = ['']
 
@@ -301,7 +474,7 @@ class Main(Frame):
         RESULT_TEXT[-1] += '7'
         self.result['text'] = ''.join(RESULT_TEXT)
 
-    def eight(self):
+    def eightf(self, smth=None):
         global RESULT_TEXT, ANS
 
         self.enablebtns()
@@ -309,7 +482,15 @@ class Main(Frame):
         if RESULT_TEXT[-1] == '0':
             RESULT_TEXT[-1] = ''
 
-        if ANS != '' and RESULT_TEXT[-1] not in [i for i in ('+', '-', '÷', '×')]:
+        if self.checker != '':
+            if len(RESULT_TEXT) == 2:
+                if RESULT_TEXT[1] in [i for i in ('+', '-', '÷', '×')]:
+                    self.checker = ''
+                    RESULT_TEXT.append('8')
+                    self.result['text'] = ''.join(RESULT_TEXT)
+                    return
+
+        if ANS == 'Maths Error':
             ANS = ''
             RESULT_TEXT = ['']
 
@@ -321,7 +502,7 @@ class Main(Frame):
         RESULT_TEXT[-1] += '8'
         self.result['text'] = ''.join(RESULT_TEXT)
     
-    def nine(self):
+    def ninef(self, smth=None):
         global RESULT_TEXT, ANS
 
         self.enablebtns()
@@ -329,7 +510,15 @@ class Main(Frame):
         if RESULT_TEXT[-1] == '0':
             RESULT_TEXT[-1] = ''
 
-        if ANS != '' and RESULT_TEXT[-1] not in [i for i in ('+', '-', '÷', '×')]:
+        if self.checker != '':
+            if len(RESULT_TEXT) == 2:
+                if RESULT_TEXT[1] in [i for i in ('+', '-', '÷', '×')]:
+                    self.checker = ''
+                    RESULT_TEXT.append('9')
+                    self.result['text'] = ''.join(RESULT_TEXT)
+                    return
+
+        if ANS == 'Maths Error':
             ANS = ''
             RESULT_TEXT = ['']
 
@@ -341,7 +530,7 @@ class Main(Frame):
         RESULT_TEXT[-1] += '9'
         self.result['text'] = ''.join(RESULT_TEXT)
 
-    def zero(self):
+    def zerof(self, smth=None):
         global RESULT_TEXT, ANS
 
         self.enablebtns()
@@ -349,7 +538,15 @@ class Main(Frame):
         if RESULT_TEXT[-1] == '0':
             RESULT_TEXT[-1] = ''
 
-        if ANS != '' and RESULT_TEXT[-1] not in [i for i in ('+', '-', '÷', '×')]:
+        if self.checker != '':
+            if len(RESULT_TEXT) == 2:
+                if RESULT_TEXT[1] in [i for i in ('+', '-', '÷', '×')]:
+                    self.checker = ''
+                    RESULT_TEXT.append('0')
+                    self.result['text'] = ''.join(RESULT_TEXT)
+                    return
+
+        if ANS == 'Maths Error':
             ANS = ''
             RESULT_TEXT = ['']
 
@@ -361,27 +558,46 @@ class Main(Frame):
         RESULT_TEXT[-1] += '0'
         self.result['text'] = ''.join(RESULT_TEXT)
 
-    def deci(self):
+    def decif(self, smth=None):
         global RESULT_TEXT
+
+        if RESULT_TEXT[-1] not in [i for i in ('+', '-', '÷', '×')] and RESULT_TEXT[-1][-1] == '.':
+            return
+        
+        if RESULT_TEXT[-1] in [i for i in ('+', '-', '÷', '×')]:
+            RESULT_TEXT.append('0.')
+            self.result['text'] = ''.join(RESULT_TEXT)
+            return
+
         RESULT_TEXT[-1] += '.'
         self.result['text'] = ''.join(RESULT_TEXT)
 
-    def add(self):
+    def addf(self, smth=None):
         global RESULT_TEXT
 
         if ''.join(RESULT_TEXT) == '':
             return
 
-        if len(RESULT_TEXT) == 3: 
+        if len(RESULT_TEXT) == 2:
+            RESULT_TEXT[1] = '+'
+            self.result['text'] = ''.join(RESULT_TEXT)
+            return
+
+        if len(RESULT_TEXT) == 3:
             self.equate()
 
         RESULT_TEXT.append('+')
         self.result['text'] = ''.join(RESULT_TEXT)
 
-    def sub(self):
+    def subf(self, smth=None):
         global RESULT_TEXT
 
         if ''.join(RESULT_TEXT) == '':
+            return
+
+        if len(RESULT_TEXT) == 2:
+            RESULT_TEXT[1] = '-'
+            self.result['text'] = ''.join(RESULT_TEXT)
             return
 
         if len(RESULT_TEXT) == 3: 
@@ -390,10 +606,15 @@ class Main(Frame):
         RESULT_TEXT.append('-')
         self.result['text'] = ''.join(RESULT_TEXT)
 
-    def multi(self):
+    def multif(self, smth=None):
         global RESULT_TEXT
 
         if ''.join(RESULT_TEXT) == '':
+            return
+
+        if len(RESULT_TEXT) == 2:
+            RESULT_TEXT[1] = '×'
+            self.result['text'] = ''.join(RESULT_TEXT)
             return
 
         if len(RESULT_TEXT) == 3: 
@@ -402,7 +623,7 @@ class Main(Frame):
         RESULT_TEXT.append('×')
         self.result['text'] = ''.join(RESULT_TEXT)
 
-    def plusminus(self):
+    def plusminusf(self, smth=None):
         global RESULT_TEXT
 
         if ''.join(RESULT_TEXT) == '':
@@ -412,24 +633,19 @@ class Main(Frame):
 
         if RESULT_TEXT[-1] == '0': return
 
-        for i in range(len(RESULT_TEXT)):
-
-            if RESULT_TEXT[i] in [j for j in ('+', '-', '×')]: continue
-            if RESULT_TEXT[i] == '÷': continue
-
-            if RESULT_TEXT[i][0] == '-':
-                RESULT_TEXT[i] = RESULT_TEXT[i][1::]
-                self.result['text'] = ''.join(RESULT_TEXT)
-                continue
-            else:
-                RESULT_TEXT[i] = '-' + RESULT_TEXT[i]
-                self.result['text'] = ''.join(RESULT_TEXT)
-                continue
+        if RESULT_TEXT[-1][0] == '-':
+            RESULT_TEXT[-1] = RESULT_TEXT[-1][1::]
+            self.result['text'] = ''.join(RESULT_TEXT)
+            return
+        else:
+            RESULT_TEXT[-1] = '-' + RESULT_TEXT[-1]
+            self.result['text'] = ''.join(RESULT_TEXT)
+            return
             
-    def equate(self):
+    def equate(self, smth=None):
         global RESULT_TEXT, ANS
 
-        if ANS == 'Cannot Divide By Zero':
+        if ANS == 'Maths Error':
             ANS = ''
             RESULT_TEXT = ['0']
             self.result['text'] = ''.join(RESULT_TEXT)
@@ -440,24 +656,23 @@ class Main(Frame):
         def syms(sym):
             one = float(RESULT_TEXT[0])
             two = float(RESULT_TEXT[2])
-            ans = ''
+            ansdiv = ''
 
             try:
-                ans = one / two
+                ansdiv = one / two
             except ZeroDivisionError:
-                ans = 'Cannot Divide By Zero'
+                ansdiv = 'Maths Error'
 
             switcher = {
                 '+': one + two,
                 '-': one - two,
                 '×': one * two,
-                '÷': ans,
-                '√': math.sqrt(one)
+                '÷': ansdiv
             }
 
             return switcher.get(sym)
 
-        if syms(RESULT_TEXT[1]) == 'Cannot Divide By Zero':
+        if syms(RESULT_TEXT[1]) == 'Maths Error':
             self.disablebtns()
             ANS = syms(RESULT_TEXT[1])
             RESULT_TEXT = [str(ANS)]
@@ -466,6 +681,7 @@ class Main(Frame):
 
         ANS = math.floor(syms(RESULT_TEXT[1])) if syms(RESULT_TEXT[1]).is_integer() else syms(RESULT_TEXT[1])
         RESULT_TEXT = [str(ANS)]
+        self.checker = 'Ok!'
         self.result['text'] = ANS
 
     def disablebtns(self):
