@@ -22,7 +22,7 @@ To install modules required after installing Python3, run in Command Promp/Power
 
 # What's New
 1. Fixed Negative Square Root not doing anything
-2. Fixed numbers resetting after typing second digit after a symbol (after equating)
+2. Fixed numbers resetting after typing second digit after a symbol (after equating once)
 3. Fixed decimal spamming
 4. Fixed the way plus-mins button works
 5. Fixed many more bugs...
